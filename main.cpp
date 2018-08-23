@@ -52,6 +52,8 @@
 #include <QtWidgets>
 
 #include <math.h>
+#include <stdlib.h> // atoi
+// #include <iostream>
 
 #include "target.h"
 
@@ -61,6 +63,12 @@ static const int MouseCount = 1;
 
 QTextStream _qout;
 
+// extern ostream cout;
+
+void usage()
+{
+	printf("usage: target_track [-h <host address>] [-p <port number>]\n");
+}
 
 int main(int argc, char **argv)
 {
@@ -92,7 +100,47 @@ int main(int argc, char **argv)
     view.resize(1000, 800);
     view.show();
 
-		Subscriber subscriber;
+		int n;
+
+		// set default host and port
+		QHostAddress host = QHostAddress::LocalHost;
+		quint16 port = 1183;
+
+		for(n = 1; n < argc; n++) {
+			if(argv[n][0] == '-') {
+				switch(argv[n][1]) {
+				case 'h': // host address
+					if(n + 1 < argc) {
+						host.setAddress(argv[n+1]);
+						printf("host: *%s*\n", argv[n+1]);
+					} else {
+						printf("error: missing parameter\n");
+						usage();
+						exit(-1);
+					}
+					break;
+					
+				case 'p': // host port
+					if(n + 1 < argc) {
+						port = atoi(argv[n+1]);
+					} else {
+						printf("error: missing parameter\n");
+						usage();
+						exit(-1);
+					}
+					break;
+
+				default:
+					printf("unknown command\n");
+					break;
+				}
+			}
+		}
+
+		QTextStream(stdout) << "attempting to connect to " << host.toString() << ": " << port << endl;
+		
+		// Subscriber subscriber;
+		Subscriber subscriber(host, port);
     subscriber.connectToHost();
 
 		QObject::connect(&subscriber, &Subscriber::received, &target, &Target::onReceived);
