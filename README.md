@@ -9,3 +9,12 @@ Then clone and build Target Track.
 
 Developed and tested on Linux on Qt version 5.9.1
 
+Windows Install
+Install Qt
+I installed from https://www.qt.io
+When installing for Windows, I had to setup a Qt account.  This was not necessary when installing on LInux.
+
+Install a git client
+I installed a command line client from https://git-scm.com/download/win
+
+
